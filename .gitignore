@@ -1,0 +1,11 @@
+
+*.vsidx
+*.lock
+*.db
+*.db-shm
+*.opendb
+*.db-wal
+*.aps
+FileReader/FileReader/FileReader.aps
+FileReader/.vs/FileReader/v17/.suo
+FileReader/.vs/FileReader/v17/fileList.bin
