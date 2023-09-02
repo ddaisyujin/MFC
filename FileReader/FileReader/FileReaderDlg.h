@@ -1,9 +1,8 @@
 ﻿
 // FileReaderDlg.h: 헤더 파일
-//
-
 #pragma once
-
+#include "OwnUtility.h"
+#include "ItemController.h"
 
 // CFileReaderDlg 대화 상자
 class CFileReaderDlg : public CDialogEx
@@ -31,11 +30,36 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	CTreeCtrl treeFileList;
-	CTreeCtrl treeItem;
+	enum TOOLBOX_ITEM {
+		BUTTON_WRITE,
+		BUTTON_SEARCH,
+		STATIC_ITEM_NAME,
+		EDIT_ITEM_VALUE,
+		EDIT_SEARCH_NAME,
+		EDIT_ITEM_VALUE_INDEX,
+		COMBO_MODE,
+		TREE_ITEM_LIST,
+		TOOLBOX_ITEM_SIZE
+	};
+public:
+	CTreeCtrl treeItemList;
 	CStatic staticItemName;
 	CEdit editItemValue;
 	CButton buttonWrite;
 	CButton buttonLoad;
 	afx_msg void OnBnClickedButtonLoad();
+	afx_msg void OnTvnSelchangedTreeItem(NMHDR* pNMHDR, LRESULT* pResult);
+
+	void ControlToolBoxItem(TOOLBOX_ITEM toolbox, bool visible = false, CString value=0);
+	void InitializeToolBox(void);
+	void SetToolboxItem(TOOLBOX_ITEM toolbox, CString value = 0, HTREEITEM htree = 0);
+	string GetToolboxItem(TOOLBOX_ITEM toolbox, HTREEITEM htree = 0);
+
+public:
+	void UpdatetoolboxItem(FILE_HANDLER& treeData);
+	CComboBox comboMode;
+	CEdit editSearchName;
+	CButton buttonSearch;
+	CEdit editItemValueIdex;
 };
+

@@ -18,9 +18,6 @@
     <ClInclude Include="FileReader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="FileReaderDlg.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="framework.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -33,7 +30,13 @@
     <ClInclude Include="pch.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="SelectItem.h">
+    <ClInclude Include="OwnUtility.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemController.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="FileReaderDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,10 +44,16 @@
     <ClCompile Include="FileReader.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="FileReaderDlg.cpp">
+    <ClCompile Include="pch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="pch.cpp">
+    <ClCompile Include="OwnUtility.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemController.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="FileReaderDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
