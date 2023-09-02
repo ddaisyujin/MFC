@@ -1,5 +1,13 @@
 #include "ItemController.h"
 
+void INFO::ClearInfo()
+{
+	mode = "";
+	name = "";
+	value = { 0,0 };
+	hItem = 0;
+}
+
 void FILE_HANDLER::UpdateItemMap()
 {
 	ifstream readFile(dataFilePath);

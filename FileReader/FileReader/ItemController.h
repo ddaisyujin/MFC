@@ -4,7 +4,7 @@
 class DATA_PAIR
 {
 public:
-	vector<string>* addr=0;
+	string* addr=0;
 	int size=0;
 };
 
@@ -14,6 +14,9 @@ public:
 	string mode;
 	string name;
 	DATA_PAIR value;
+	HTREEITEM hItem=0;
+
+	void ClearInfo(void);
 };
 
 class FILE_HANDLER{
@@ -31,5 +34,5 @@ public:
 	void UpdateItemMap();
 };
 
-extern INFO selectItems;
+extern INFO selectItem;
 extern FILE_HANDLER trees;
