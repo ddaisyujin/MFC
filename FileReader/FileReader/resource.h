@@ -4,7 +4,6 @@
 //
 #define IDD_FILEREADER_DIALOG           102
 #define IDR_MAINFRAME                   128
-#define BUTTON_LOAD                     1000
 #define IDC_BUTTON_LOAD                 1000
 #define IDC_TREE1                       1001
 #define IDC_TREE_ITEM                   1001

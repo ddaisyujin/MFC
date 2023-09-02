@@ -21,7 +21,7 @@ CFileReaderDlg::CFileReaderDlg(CWnd* pParent /*=nullptr*/)
 void CFileReaderDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_TREE_ITEM, treeItem);
+	DDX_Control(pDX, IDC_TREE_ITEM, treeItemList);
 	DDX_Control(pDX, IDC_STATIC_ITEM_NAME, staticItemName);
 	DDX_Control(pDX, IDC_EDIT_ITEM_VALUE, editItemValue);
 	DDX_Control(pDX, IDC_BUTTON_WRITE, buttonWrite);
@@ -32,10 +32,13 @@ BEGIN_MESSAGE_MAP(CFileReaderDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON_LOAD, &CFileReaderDlg::OnBnClickedButtonLoad)
+	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_ITEM, &CFileReaderDlg::OnTvnSelchangedTreeItem)
 END_MESSAGE_MAP()
 
 
 // CFileReaderDlg 메시지 처리기
+INFO selectItems;
+FILE_HANDLER trees;
 
 BOOL CFileReaderDlg::OnInitDialog()
 {
@@ -90,4 +93,73 @@ HCURSOR CFileReaderDlg::OnQueryDragIcon()
 void CFileReaderDlg::OnBnClickedButtonLoad()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	//1. initialize
+	trees.item.clear();
+
+	//2. Load FileReaderDataFile
+	trees.UpdateItemMap();
+
+	//3. Tree에 업데이트
+	UpdatetoolboxItem(trees);
+}
+
+void CFileReaderDlg::ControlToolBoxItem(TOOLBOX_ITEM toolbox, bool visible)
+{
+	switch (toolbox)
+	{
+	case BUTTON_LOAD:
+		buttonLoad.EnableWindow(visible);
+		break;
+	default:
+		break;
+	}
+}
+void CFileReaderDlg::SetToolboxItem(TOOLBOX_ITEM toolbox, CString value, HTREEITEM htree)
+{
+	switch (toolbox)
+	{
+	case TREE_ITEM_LIST:
+		// htree 
+		break;
+	default:
+		break;
+	}
+}
+
+string CFileReaderDlg::GetToolboxItem(TOOLBOX_ITEM toolbox)
+{
+	string retString = "";
+	//switch (toolbox)
+	//{
+	//default:
+	//	break;
+	//}
+	return retString;
+}
+void CFileReaderDlg::UpdatetoolboxItem(FILE_HANDLER& treeData)
+{
+	HTREEITEM root, modeChild;
+
+	root = treeItemList.InsertItem(TEXT("root"), 0, 0, TVI_ROOT, TVI_LAST);
+	for (auto& mode : treeData.item)
+	{
+		modeChild = treeItemList.InsertItem(StringToCString(mode.first), 0, 0, root, TVI_LAST);
+		for (auto& parameter : mode.second)
+		{
+			string strName = parameter.first;
+			string strValues = "";
+			for (auto value : parameter.second)
+			{
+				strValues += " | " + value;
+			}
+			treeItemList.InsertItem(StringToCString(strName + strValues), 0, 0, modeChild, TVI_LAST);
+		}
+	}
+}
+
+void CFileReaderDlg::OnTvnSelchangedTreeItem(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	*pResult = 0;
 }

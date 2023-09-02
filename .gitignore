@@ -21,3 +21,5 @@ FileReader/FileReader/FileReader.aps
 *.idb
 *.pdb
 *.exe
+*.ipch
+*.bak
