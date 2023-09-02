@@ -9,3 +9,15 @@
 FileReader/FileReader/FileReader.aps
 FileReader/.vs/FileReader/v17/.suo
 FileReader/.vs/FileReader/v17/fileList.bin
+FileReader/FileReader/FileReader.aps
+*.log
+*.recipe
+*.ilk
+*.pch
+*.obj
+*.res
+*.tlog
+*.txt
+*.idb
+*.pdb
+*.exe
