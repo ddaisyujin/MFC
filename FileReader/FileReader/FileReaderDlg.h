@@ -54,6 +54,8 @@ public:
 	void InitializeToolBox(void);
 	void SetToolboxItem(TOOLBOX_ITEM toolbox, CString value = 0, HTREEITEM htree = 0);
 	string GetToolboxItem(TOOLBOX_ITEM toolbox, HTREEITEM htree = 0);
+	HTREEITEM FindTreeItem(HTREEITEM hItem, string mode, string name);
+	void FindTreeItemBySelectItem(INFO* selectItem);
 
 public:
 	void UpdatetoolboxItem(FILE_HANDLER& treeData);
@@ -61,5 +63,6 @@ public:
 	CEdit editSearchName;
 	CButton buttonSearch;
 	CEdit editItemValueIdex;
+	afx_msg void OnBnClickedButtonSearch();
 };
 
