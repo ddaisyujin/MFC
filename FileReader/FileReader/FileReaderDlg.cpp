@@ -37,6 +37,7 @@ BEGIN_MESSAGE_MAP(CFileReaderDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON_LOAD, &CFileReaderDlg::OnBnClickedButtonLoad)
 	ON_NOTIFY(TVN_SELCHANGED, IDC_TREE_ITEM, &CFileReaderDlg::OnTvnSelchangedTreeItem)
+	ON_BN_CLICKED(IDC_BUTTON_SEARCH, &CFileReaderDlg::OnBnClickedButtonSearch)
 END_MESSAGE_MAP()
 
 
@@ -114,9 +115,9 @@ void CFileReaderDlg::OnBnClickedButtonLoad()
 
 	////FrontEnd
 	//1. Display
-	/*ControlToolBoxItem(BUTTON_WRITE,true);
-	ControlToolBoxItem(STATIC_ITEM_NAME, true, L"");
-	ControlToolBoxItem(EDIT_ITEM_VALUE, true, L"");*/
+	//ControlToolBoxItem(BUTTON_WRITE,true);
+	//ControlToolBoxItem(STATIC_ITEM_NAME, true, L"");
+	//ControlToolBoxItem(EDIT_ITEM_VALUE, true, L"");
 }
 
 
@@ -209,7 +210,14 @@ string CFileReaderDlg::GetToolboxItem(TOOLBOX_ITEM toolbox, HTREEITEM htree)
 	case COMBO_MODE:
 	{
 		CString curStr;
-		comboMode.GetDlgItemTextW(comboMode.GetCurSel(), curStr);
+		comboMode.GetLBText(comboMode.GetCurSel(), curStr);
+		retString = CStringToString(curStr);
+		break;
+	}
+	case EDIT_SEARCH_NAME:
+	{
+		CString curStr;
+		editSearchName.GetWindowTextW(curStr);
 		retString = CStringToString(curStr);
 		break;
 	}
@@ -260,9 +268,9 @@ void CFileReaderDlg::OnTvnSelchangedTreeItem(NMHDR* pNMHDR, LRESULT* pResult)
 	string curItemNameStr = GetToolboxItem(TREE_ITEM_LIST, curItemName);
 
 	////BackEnd
-	//1. selectItem instance Update
 	if ((!(curItemModeStr.empty())&& (curItemModeStr!="root")) && !(curItemNameStr.empty()))
 	{
+		//1. selectItem instance Update
 		selectItem.mode = curItemModeStr;
 		selectItem.name = curItemNameStr;
 		selectItem.value.addr = &(trees.item[selectItem.mode][selectItem.name][0]);
@@ -271,6 +279,7 @@ void CFileReaderDlg::OnTvnSelchangedTreeItem(NMHDR* pNMHDR, LRESULT* pResult)
 
 		////FrontEnd
 		//1. Display
+		ControlToolBoxItem(BUTTON_WRITE, true);
 		ControlToolBoxItem(STATIC_ITEM_NAME, true, StringToCString(selectItem.name));
 		ControlToolBoxItem(COMBO_MODE, true, StringToCString(selectItem.mode));
 		ControlToolBoxItem(EDIT_ITEM_VALUE, true, StringToCString(*(selectItem.value.addr)));
@@ -291,4 +300,94 @@ void CFileReaderDlg::OnTvnSelchangedTreeItem(NMHDR* pNMHDR, LRESULT* pResult)
 	}
 
 	*pResult = 0;
+}
+
+
+HTREEITEM CFileReaderDlg::FindTreeItem(HTREEITEM hItem, string mode, string name)
+{
+	HTREEITEM findItem = NULL;
+	if (hItem)
+	{
+		HTREEITEM curItem = hItem;
+		HTREEITEM parentItem = treeItemList.GetParentItem(hItem);
+
+		if (GetToolboxItem(TREE_ITEM_LIST, parentItem) == mode)
+		{
+			if (GetToolboxItem(TREE_ITEM_LIST, curItem) == name)
+			{
+				findItem = curItem;
+			}
+			else
+			{
+				findItem = FindTreeItem(treeItemList.GetNextSiblingItem(curItem), mode, name);
+			}
+		}
+		else
+		{
+			// 자식 노드를 찾는다.
+			findItem = FindTreeItem(treeItemList.GetChildItem(curItem), mode, name);
+			// 형제노드를 찾는다.
+			if (findItem == NULL)
+			{
+				findItem = FindTreeItem(treeItemList.GetNextSiblingItem(curItem), mode, name);
+			}
+		}
+	}
+
+	return findItem;
+}
+
+void CFileReaderDlg::FindTreeItemBySelectItem(INFO* selectItem)
+{
+	auto treesIter = trees.item[selectItem->mode].find(selectItem->name);
+	if (treesIter != trees.item[selectItem->mode].end())
+	{
+		//1. TreeMap에서 찾기
+		selectItem->value.addr = &(trees.item[selectItem->mode][selectItem->name][0]);
+		selectItem->value.size = (int)(trees.item[selectItem->mode][selectItem->name].size());
+
+		//2. TreeView에서 찾기
+		selectItem->hItem = FindTreeItem(treeItemList.GetRootItem(), selectItem->mode, selectItem->name);
+		treeItemList.SelectItem(selectItem->hItem);
+		treeItemList.SetFocus();
+	}
+}
+
+void CFileReaderDlg::OnBnClickedButtonSearch()
+{
+	////BackEnd
+	//1. search Item 정보 Update
+	selectItem.ClearInfo();
+
+	string searchMode = GetToolboxItem(COMBO_MODE);
+	string searchName = GetToolboxItem(EDIT_SEARCH_NAME);
+
+	selectItem.mode = searchMode;
+	selectItem.name = searchName;
+	
+	//1. 
+	////FrontEnd
+	FindTreeItemBySelectItem(&selectItem);
+
+	if (selectItem.hItem == NULL)
+	{
+		InitializeToolBox();
+	}
+	else
+	{
+		ControlToolBoxItem(BUTTON_WRITE, true);
+		ControlToolBoxItem(STATIC_ITEM_NAME, true, StringToCString(selectItem.name));
+		ControlToolBoxItem(COMBO_MODE, true, StringToCString(selectItem.mode));
+		ControlToolBoxItem(EDIT_ITEM_VALUE, true, StringToCString(*(selectItem.value.addr)));
+		ControlToolBoxItem(EDIT_SEARCH_NAME, true, StringToCString(selectItem.name));
+		ControlToolBoxItem(BUTTON_SEARCH, true);
+		if (selectItem.value.size > 1)
+		{
+			ControlToolBoxItem(EDIT_ITEM_VALUE_INDEX, true, StringToCString("0"));
+		}
+		else
+		{
+			ControlToolBoxItem(EDIT_ITEM_VALUE_INDEX);
+		}
+	}
 }
